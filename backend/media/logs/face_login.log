@@ -1,0 +1,68 @@
+[2025-12-13T08:48:57.989841] loaded encodings for 2 employees: ['8b46499a-47de-4e1b-821e-e2c337fb2845', 'c3c8c3cf-8b54-4006-9aa1-f7b856bf3263']
+[2025-12-13T08:48:57.991949]  - 8b46499a-47de-4e1b-821e-e2c337fb2845: enc shape/size = (4096,) / 4096
+[2025-12-13T08:48:57.993625]  - c3c8c3cf-8b54-4006-9aa1-f7b856bf3263: enc shape/size = (128,) / 128
+[2025-12-13T08:48:58.065243] use_method=grayscale_fallback; query_encoding_size=(4096,)
+[2025-12-13T09:09:14.650620] loaded encodings for 2 employees: ['8b46499a-47de-4e1b-821e-e2c337fb2845', 'c3c8c3cf-8b54-4006-9aa1-f7b856bf3263']
+[2025-12-13T09:09:14.655746]  - 8b46499a-47de-4e1b-821e-e2c337fb2845: enc shape/size = (4096,) / 4096
+[2025-12-13T09:09:14.659764]  - c3c8c3cf-8b54-4006-9aa1-f7b856bf3263: enc shape/size = (128,) / 128
+[2025-12-13T09:09:14.698885] use_method=grayscale_fallback; query_encoding_size=(4096,)
+[2025-12-13T09:09:20.739861] loaded encodings for 2 employees: ['8b46499a-47de-4e1b-821e-e2c337fb2845', 'c3c8c3cf-8b54-4006-9aa1-f7b856bf3263']
+[2025-12-13T09:09:20.742720]  - 8b46499a-47de-4e1b-821e-e2c337fb2845: enc shape/size = (4096,) / 4096
+[2025-12-13T09:09:20.744894]  - c3c8c3cf-8b54-4006-9aa1-f7b856bf3263: enc shape/size = (128,) / 128
+[2025-12-13T09:09:20.762887] use_method=grayscale_fallback; query_encoding_size=(4096,)
+[2025-12-13T09:09:22.188012] loaded encodings for 2 employees: ['8b46499a-47de-4e1b-821e-e2c337fb2845', 'c3c8c3cf-8b54-4006-9aa1-f7b856bf3263']
+[2025-12-13T09:09:22.190288]  - 8b46499a-47de-4e1b-821e-e2c337fb2845: enc shape/size = (4096,) / 4096
+[2025-12-13T09:09:22.192467]  - c3c8c3cf-8b54-4006-9aa1-f7b856bf3263: enc shape/size = (128,) / 128
+[2025-12-13T09:09:22.204546] use_method=grayscale_fallback; query_encoding_size=(4096,)
+[2025-12-13T09:11:09.544956] loaded encodings for 2 employees: ['8b46499a-47de-4e1b-821e-e2c337fb2845', 'c3c8c3cf-8b54-4006-9aa1-f7b856bf3263']
+[2025-12-13T09:11:09.549000]  - 8b46499a-47de-4e1b-821e-e2c337fb2845: enc shape/size = (4096,) / 4096
+[2025-12-13T09:11:09.553833]  - c3c8c3cf-8b54-4006-9aa1-f7b856bf3263: enc shape/size = (128,) / 128
+[2025-12-13T09:11:09.583573] use_method=grayscale_fallback; query_encoding_size=(4096,)
+[2025-12-13T09:11:10.701645] loaded encodings for 2 employees: ['8b46499a-47de-4e1b-821e-e2c337fb2845', 'c3c8c3cf-8b54-4006-9aa1-f7b856bf3263']
+[2025-12-13T09:11:10.703188]  - 8b46499a-47de-4e1b-821e-e2c337fb2845: enc shape/size = (4096,) / 4096
+[2025-12-13T09:11:10.704727]  - c3c8c3cf-8b54-4006-9aa1-f7b856bf3263: enc shape/size = (128,) / 128
+[2025-12-13T09:11:10.714702] use_method=grayscale_fallback; query_encoding_size=(4096,)
+[2025-12-13T09:11:11.780194] loaded encodings for 2 employees: ['8b46499a-47de-4e1b-821e-e2c337fb2845', 'c3c8c3cf-8b54-4006-9aa1-f7b856bf3263']
+[2025-12-13T09:11:11.783539]  - 8b46499a-47de-4e1b-821e-e2c337fb2845: enc shape/size = (4096,) / 4096
+[2025-12-13T09:11:11.785661]  - c3c8c3cf-8b54-4006-9aa1-f7b856bf3263: enc shape/size = (128,) / 128
+[2025-12-13T09:11:11.801277] use_method=grayscale_fallback; query_encoding_size=(4096,)
+[2025-12-13T09:11:14.076509] loaded encodings for 2 employees: ['8b46499a-47de-4e1b-821e-e2c337fb2845', 'c3c8c3cf-8b54-4006-9aa1-f7b856bf3263']
+[2025-12-13T09:11:14.081919]  - 8b46499a-47de-4e1b-821e-e2c337fb2845: enc shape/size = (4096,) / 4096
+[2025-12-13T09:11:14.085313]  - c3c8c3cf-8b54-4006-9aa1-f7b856bf3263: enc shape/size = (128,) / 128
+[2025-12-13T09:11:14.098675] use_method=grayscale_fallback; query_encoding_size=(4096,)
+[2025-12-13T09:11:20.547938] loaded encodings for 2 employees: ['8b46499a-47de-4e1b-821e-e2c337fb2845', 'c3c8c3cf-8b54-4006-9aa1-f7b856bf3263']
+[2025-12-13T09:11:20.551865]  - 8b46499a-47de-4e1b-821e-e2c337fb2845: enc shape/size = (4096,) / 4096
+[2025-12-13T09:11:20.554059]  - c3c8c3cf-8b54-4006-9aa1-f7b856bf3263: enc shape/size = (128,) / 128
+[2025-12-13T09:11:20.570546] use_method=grayscale_fallback; query_encoding_size=(4096,)
+[2025-12-13T09:11:21.648639] loaded encodings for 2 employees: ['8b46499a-47de-4e1b-821e-e2c337fb2845', 'c3c8c3cf-8b54-4006-9aa1-f7b856bf3263']
+[2025-12-13T09:11:21.650937]  - 8b46499a-47de-4e1b-821e-e2c337fb2845: enc shape/size = (4096,) / 4096
+[2025-12-13T09:11:21.654129]  - c3c8c3cf-8b54-4006-9aa1-f7b856bf3263: enc shape/size = (128,) / 128
+[2025-12-13T09:11:21.686723] use_method=grayscale_fallback; query_encoding_size=(4096,)
+[2025-12-13T09:11:31.081533] loaded encodings for 2 employees: ['8b46499a-47de-4e1b-821e-e2c337fb2845', 'c3c8c3cf-8b54-4006-9aa1-f7b856bf3263']
+[2025-12-13T09:11:31.088068]  - 8b46499a-47de-4e1b-821e-e2c337fb2845: enc shape/size = (4096,) / 4096
+[2025-12-13T09:11:31.089291]  - c3c8c3cf-8b54-4006-9aa1-f7b856bf3263: enc shape/size = (128,) / 128
+[2025-12-13T09:11:31.103462] use_method=grayscale_fallback; query_encoding_size=(4096,)
+[2025-12-13T09:11:32.059131] loaded encodings for 2 employees: ['8b46499a-47de-4e1b-821e-e2c337fb2845', 'c3c8c3cf-8b54-4006-9aa1-f7b856bf3263']
+[2025-12-13T09:11:32.062629]  - 8b46499a-47de-4e1b-821e-e2c337fb2845: enc shape/size = (4096,) / 4096
+[2025-12-13T09:11:32.065612]  - c3c8c3cf-8b54-4006-9aa1-f7b856bf3263: enc shape/size = (128,) / 128
+[2025-12-13T09:11:32.087385] use_method=grayscale_fallback; query_encoding_size=(4096,)
+[2025-12-13T09:11:41.311999] loaded encodings for 2 employees: ['8b46499a-47de-4e1b-821e-e2c337fb2845', 'c3c8c3cf-8b54-4006-9aa1-f7b856bf3263']
+[2025-12-13T09:11:41.314675]  - 8b46499a-47de-4e1b-821e-e2c337fb2845: enc shape/size = (4096,) / 4096
+[2025-12-13T09:11:41.316762]  - c3c8c3cf-8b54-4006-9aa1-f7b856bf3263: enc shape/size = (128,) / 128
+[2025-12-13T09:11:41.329078] use_method=grayscale_fallback; query_encoding_size=(4096,)
+[2025-12-13T09:11:42.284431] loaded encodings for 2 employees: ['8b46499a-47de-4e1b-821e-e2c337fb2845', 'c3c8c3cf-8b54-4006-9aa1-f7b856bf3263']
+[2025-12-13T09:11:42.289166]  - 8b46499a-47de-4e1b-821e-e2c337fb2845: enc shape/size = (4096,) / 4096
+[2025-12-13T09:11:42.291093]  - c3c8c3cf-8b54-4006-9aa1-f7b856bf3263: enc shape/size = (128,) / 128
+[2025-12-13T09:11:42.300402] use_method=grayscale_fallback; query_encoding_size=(4096,)
+[2025-12-13T09:13:40.801930] loaded encodings for 2 employees: ['8b46499a-47de-4e1b-821e-e2c337fb2845', 'c3c8c3cf-8b54-4006-9aa1-f7b856bf3263']
+[2025-12-13T09:13:40.805114]  - 8b46499a-47de-4e1b-821e-e2c337fb2845: enc shape/size = (4096,) / 4096
+[2025-12-13T09:13:40.809117]  - c3c8c3cf-8b54-4006-9aa1-f7b856bf3263: enc shape/size = (128,) / 128
+[2025-12-13T09:13:40.841851] use_method=grayscale_fallback; query_encoding_size=(4096,)
+[2025-12-13T09:13:46.973059] loaded encodings for 2 employees: ['8b46499a-47de-4e1b-821e-e2c337fb2845', 'c3c8c3cf-8b54-4006-9aa1-f7b856bf3263']
+[2025-12-13T09:13:46.975965]  - 8b46499a-47de-4e1b-821e-e2c337fb2845: enc shape/size = (4096,) / 4096
+[2025-12-13T09:13:46.980234]  - c3c8c3cf-8b54-4006-9aa1-f7b856bf3263: enc shape/size = (128,) / 128
+[2025-12-13T09:13:47.065965] use_method=grayscale_fallback; query_encoding_size=(4096,)
+[2025-12-13T09:13:48.187915] loaded encodings for 2 employees: ['8b46499a-47de-4e1b-821e-e2c337fb2845', 'c3c8c3cf-8b54-4006-9aa1-f7b856bf3263']
+[2025-12-13T09:13:48.194152]  - 8b46499a-47de-4e1b-821e-e2c337fb2845: enc shape/size = (4096,) / 4096
+[2025-12-13T09:13:48.198102]  - c3c8c3cf-8b54-4006-9aa1-f7b856bf3263: enc shape/size = (128,) / 128
+[2025-12-13T09:13:48.214464] use_method=grayscale_fallback; query_encoding_size=(4096,)
