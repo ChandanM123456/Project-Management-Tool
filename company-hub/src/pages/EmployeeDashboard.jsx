@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import "./Dashboard.css"; // Ensure you create this CSS file
+import "./EmployeeDashboard.css"; // Ensure you create this CSS file
 
 // --- Simulated Data for the Dashboard ---
 const simulateEmployeeData = {

@@ -1,6 +1,6 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import "./Dashboard.css";
+import "./Settings.css";
 
 export default function Settings() {
   const navigate = useNavigate();

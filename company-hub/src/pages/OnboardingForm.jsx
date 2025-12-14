@@ -185,13 +185,11 @@ export default function OnboardingForm() {
           }));
         }
       } else {
-        const msg = response.data.message || response.data.error || "Failed to analyze resume. Please try again.";
-        setError(msg);
+        setError("Failed to analyze resume. Please try again.");
       }
     } catch (err) {
       console.error('Resume analysis error:', err);
-      const serverMsg = err?.response?.data?.message || err?.response?.data?.error;
-      setError(serverMsg || "Failed to analyze resume. You can continue with manual entry.");
+      setError("Failed to analyze resume. You can continue with manual entry.");
     } finally {
       setAnalyzingResume(false);
     }

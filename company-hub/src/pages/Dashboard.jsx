@@ -67,8 +67,8 @@ export default function Dashboard() {
   const handleCreateInvite = async () => {
     setShareLoading(true);
     try {
-      const res = await axiosInstance.post("/company/employees/create-invite/");
-      setInviteUrl(res.data.url || `${window.location.origin}/employee/onboard/${res.data.invite_token}/`);
+      const res = await axiosInstance.post("/employees/create-invite/");
+      setInviteUrl(res.data.url || `${window.location.origin}/onboard/${res.data.invite_token}/`);
     } catch (err) {
       console.error("Invite creation failed", err.response?.data || err.message);
       alert("Failed to create invite link. Please try again.");

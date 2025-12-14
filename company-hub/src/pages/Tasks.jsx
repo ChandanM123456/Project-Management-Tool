@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import "./Dashboard.css";
+import "./Tasks.css";
 
 export default function Tasks() {
   const navigate = useNavigate();
@@ -14,8 +14,6 @@ export default function Tasks() {
   const [employees, setEmployees] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showTaskModal, setShowTaskModal] = useState(false);
-  const [showEmployeeModal, setShowEmployeeModal] = useState(false);
-  const [selectedEmployee, setSelectedEmployee] = useState(null);
   const [editingTask, setEditingTask] = useState(null);
   const [formData, setFormData] = useState({
     title: '',
@@ -43,15 +41,13 @@ export default function Tasks() {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       
-      // Fetch employees from company-specific endpoint
-      const employeesResponse = await axios.get(
-        `http://localhost:8000/api/employees/company/${companyId}/employees/`,
-        { headers: { 'Authorization': `Bearer ${token}` } }
-      );
+      const employeesResponse = await axios.get('http://localhost:8000/api/employees/', {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
       
       setTasks(tasksResponse.data || []);
       setProjects(projectsResponse.data || []);
-      setEmployees(employeesResponse.data?.employees || []);
+      setEmployees(employeesResponse.data || []);
     } catch (error) {
       console.error('Error loading data:', error);
       // Fallback to mock data for testing
@@ -115,17 +111,11 @@ export default function Tasks() {
   const handleSaveTask = async () => {
     try {
       const taskData = { ...formData, company: companyId };
-      // Backend expects `assigned_to` field; map `assignee_id` to `assigned_to` when calling API
-      const apiTaskData = { ...taskData };
-      if (apiTaskData.assignee_id) {
-        apiTaskData.assigned_to = apiTaskData.assignee_id;
-        delete apiTaskData.assignee_id;
-      }
 
       if (editingTask) {
         // Try backend first
         try {
-          await axios.put(`http://localhost:8000/api/tasks/${editingTask.id}/`, apiTaskData, {
+          await axios.put(`http://localhost:8000/api/tasks/${editingTask.id}/`, taskData, {
             headers: { 'Authorization': `Bearer ${token}` }
           });
         } catch (error) {
@@ -139,7 +129,7 @@ export default function Tasks() {
       } else {
         // Try backend first
         try {
-          await axios.post('http://localhost:8000/api/tasks/', apiTaskData, {
+          await axios.post('http://localhost:8000/api/tasks/', taskData, {
             headers: { 'Authorization': `Bearer ${token}` }
           });
         } catch (error) {
@@ -203,15 +193,9 @@ export default function Tasks() {
     }
   };
 
-  const todoTasks = tasks.filter(task => (task.status || '').toLowerCase() === 'todo');
-  const inProgressTasks = tasks.filter(task => {
-    const s = (task.status || '').toLowerCase();
-    return s === 'in-progress' || s === 'in_progress' || s === 'in progress' || s.includes('in');
-  });
-  const completedTasks = tasks.filter(task => {
-    const s = (task.status || '').toLowerCase();
-    return s === 'completed' || s === 'done' || s === 'complete';
-  });
+  const todoTasks = tasks.filter(task => task.status === 'todo');
+  const inProgressTasks = tasks.filter(task => task.status === 'in_progress');
+  const completedTasks = tasks.filter(task => task.status === 'done');
 
   const getPriorityColor = (priority) => {
     switch(priority) {
@@ -224,9 +208,7 @@ export default function Tasks() {
   };
 
   const getEmployeeName = (employeeId) => {
-    if (!employeeId) return 'Unassigned';
-    const idStr = String(employeeId);
-    const employee = employees.find(emp => String(emp.id) === idStr || emp.id === employeeId);
+    const employee = employees.find(emp => emp.id === employeeId);
     return employee ? `${employee.first_name} ${employee.last_name}` : 'Unassigned';
   };
 
@@ -360,10 +342,10 @@ export default function Tasks() {
                       <p className="task-description">{task.description}</p>
                       <div className="task-meta">
                         <span className={`task-priority ${getPriorityColor(task.priority)}`}>{task.priority}</span>
-                        <span className="task-assignee">👤 {getEmployeeName(task.assigned_to)}</span>
+                        <span className="task-assignee">👤 {getEmployeeName(task.assignee)}</span>
                       </div>
                       <div className="task-actions">
-                        <button onClick={() => handleStatusChange(task.id, 'in-progress')} className="btn-small">Start</button>
+                        <button onClick={() => handleStatusChange(task.id, 'in_progress')} className="btn-small">Start</button>
                         <button onClick={() => handleEditTask(task)} className="btn-small">Edit</button>
                         <button onClick={() => handleDeleteTask(task.id)} className="btn-small btn-danger">Delete</button>
                       </div>
@@ -383,10 +365,10 @@ export default function Tasks() {
                       <p className="task-description">{task.description}</p>
                       <div className="task-meta">
                         <span className={`task-priority ${getPriorityColor(task.priority)}`}>{task.priority}</span>
-                        <span className="task-assignee">👤 {getEmployeeName(task.assigned_to)}</span>
+                        <span className="task-assignee">👤 {getEmployeeName(task.assignee)}</span>
                       </div>
                       <div className="task-actions">
-                        <button onClick={() => handleStatusChange(task.id, 'completed')} className="btn-small">Complete</button>
+                        <button onClick={() => handleStatusChange(task.id, 'done')} className="btn-small">Complete</button>
                         <button onClick={() => handleEditTask(task)} className="btn-small">Edit</button>
                         <button onClick={() => handleDeleteTask(task.id)} className="btn-small btn-danger">Delete</button>
                       </div>
@@ -406,7 +388,7 @@ export default function Tasks() {
                       <p className="task-description">{task.description}</p>
                       <div className="task-meta">
                         <span className={`task-priority ${getPriorityColor(task.priority)}`}>{task.priority}</span>
-                        <span className="task-assignee">👤 {getEmployeeName(task.assigned_to)}</span>
+                        <span className="task-assignee">👤 {getEmployeeName(task.assignee)}</span>
                       </div>
                       <div className="task-actions">
                         <button onClick={() => handleStatusChange(task.id, 'todo')} className="btn-small">Reopen</button>
@@ -416,70 +398,6 @@ export default function Tasks() {
                   ))
                 )}
               </div>
-            </div>
-          </section>
-
-          <section className="employees-section">
-            <div className="section-header">
-              <div className="section-title">
-                <h2>👥 Team Members</h2>
-                <p className="section-description">View all employees and their details</p>
-              </div>
-            </div>
-            
-            <div className="employees-grid">
-              {employees.length === 0 ? (
-                <div className="empty-section">No employees in this company</div>
-              ) : (
-                employees.map(emp => (
-                  <div key={emp.id} className="employee-card">
-                    <div className="employee-header">
-                      <div className="employee-avatar">
-                        <span>{emp.first_name?.charAt(0)}{emp.last_name?.charAt(0)}</span>
-                      </div>
-                      <div className="employee-info">
-                        <h3 className="employee-name">{emp.first_name} {emp.last_name}</h3>
-                        <p className="employee-designation">{emp.designation}</p>
-                      </div>
-                    </div>
-                    
-                    <div className="employee-details">
-                      <div className="detail-item">
-                        <span className="detail-label">Email:</span>
-                        <span className="detail-value">{emp.email}</span>
-                      </div>
-                      <div className="detail-item">
-                        <span className="detail-label">Phone:</span>
-                        <span className="detail-value">{emp.phone || 'N/A'}</span>
-                      </div>
-                      <div className="detail-item">
-                        <span className="detail-label">Tasks:</span>
-                        <span className="detail-value badge">{emp.tasks_count || 0}</span>
-                      </div>
-                      {emp.skills && emp.skills.length > 0 && (
-                        <div className="detail-item">
-                          <span className="detail-label">Skills:</span>
-                          <div className="skills-list">
-                            {emp.skills.map((skill, idx) => (
-                              <span key={idx} className="skill-tag">{skill}</span>
-                            ))}
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                    
-                    <button 
-                      onClick={() => {
-                        setSelectedEmployee(emp);
-                        setShowEmployeeModal(true);
-                      }}
-                      className="btn-small btn-primary"
-                    >
-                      View Details
-                    </button>
-                  </div>
-                ))
-              )}
             </div>
           </section>
         </main>
@@ -563,106 +481,6 @@ export default function Tasks() {
               <button onClick={handleSaveTask} className="btn-primary">
                 {editingTask ? 'Update' : 'Create'} Task
               </button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Employee Details Modal */}
-      {showEmployeeModal && selectedEmployee && (
-        <div className="modal-overlay">
-          <div className="modal modal-large">
-            <div className="modal-header">
-              <h3>Employee Details</h3>
-              <button onClick={() => setShowEmployeeModal(false)} className="btn-close">×</button>
-            </div>
-            <div className="modal-body">
-              <div className="employee-modal-content">
-                <div className="employee-modal-header">
-                  <div className="employee-modal-avatar">
-                    <span>{selectedEmployee.first_name?.charAt(0)}{selectedEmployee.last_name?.charAt(0)}</span>
-                  </div>
-                  <div className="employee-modal-info">
-                    <h2>{selectedEmployee.first_name} {selectedEmployee.last_name}</h2>
-                    <p className="designation">{selectedEmployee.designation}</p>
-                    <p className="email">{selectedEmployee.email}</p>
-                  </div>
-                </div>
-
-                <div className="employee-modal-details">
-                  <div className="detail-section">
-                    <h4>Personal Information</h4>
-                    <div className="detail-grid">
-                      <div className="detail-row">
-                        <span className="label">Phone:</span>
-                        <span className="value">{selectedEmployee.phone || 'N/A'}</span>
-                      </div>
-                      <div className="detail-row">
-                        <span className="label">Department:</span>
-                        <span className="value">{selectedEmployee.department || 'N/A'}</span>
-                      </div>
-                      <div className="detail-row">
-                        <span className="label">Role:</span>
-                        <span className="value">{selectedEmployee.role || 'N/A'}</span>
-                      </div>
-                      <div className="detail-row">
-                        <span className="label">Experience:</span>
-                        <span className="value">{selectedEmployee.experience || 'N/A'}</span>
-                      </div>
-                      <div className="detail-row">
-                        <span className="label">Work Mode:</span>
-                        <span className="value">{selectedEmployee.work_mode || 'N/A'}</span>
-                      </div>
-                      <div className="detail-row">
-                        <span className="label">Start Date:</span>
-                        <span className="value">{selectedEmployee.start_date ? new Date(selectedEmployee.start_date).toLocaleDateString() : 'N/A'}</span>
-                      </div>
-                    </div>
-                  </div>
-
-                  {selectedEmployee.skills && selectedEmployee.skills.length > 0 && (
-                    <div className="detail-section">
-                      <h4>Skills</h4>
-                      <div className="skills-display">
-                        {selectedEmployee.skills.map((skill, idx) => (
-                          <span key={idx} className="skill-badge">{skill}</span>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-
-                  {selectedEmployee.tasks && selectedEmployee.tasks.length > 0 && (
-                    <div className="detail-section">
-                      <h4>Assigned Tasks ({selectedEmployee.tasks.length})</h4>
-                      <div className="tasks-list">
-                        {selectedEmployee.tasks.map(task => (
-                          <div key={task.id} className="task-item">
-                            <div className="task-item-header">
-                              <h5>{task.title}</h5>
-                              <span className={`status-badge ${String(task.status || '').replace(/-/g, '_')}`}>{task.status}</span>
-                            </div>
-                            <div className="task-item-meta">
-                              <span className={`priority-badge ${task.priority}`}>{task.priority}</span>
-                              {task.due_date && (
-                                <span className="due-date">Due: {new Date(task.due_date).toLocaleDateString()}</span>
-                              )}
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-
-                  {(!selectedEmployee.tasks || selectedEmployee.tasks.length === 0) && (
-                    <div className="detail-section">
-                      <p className="empty-message">No tasks assigned</p>
-                    </div>
-                  )}
-                </div>
-              </div>
-            </div>
-            <div className="modal-footer">
-              <button onClick={() => setShowEmployeeModal(false)} className="btn-primary">Close</button>
             </div>
           </div>
         </div>

@@ -13,8 +13,8 @@ export default function SelectRole() {
     setLoading(true);
     setInviteUrl("");
     try {
-      const res = await axiosInstance.post("/company/employees/create-invite/");
-      setInviteUrl(res.data.url || `${window.location.origin}/employee/onboard/${res.data.invite_token}/`);
+      const res = await axiosInstance.post("/employees/create-invite/");
+      setInviteUrl(res.data.url || `${window.location.origin}/onboard/${res.data.invite_token}/`);
     } catch (err) {
       console.error("Invite creation failed", err.response?.data || err.message);
       alert("Invite creation failed. Ensure you're logged in as the company.");

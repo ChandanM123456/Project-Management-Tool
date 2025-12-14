@@ -61,7 +61,7 @@ const FaceRecognition = ({
       } else if (mode === 'verify') {
         endpoint = '/api/face/verify/';
       } else if (mode === 'login') {
-        endpoint = '/api/face/login/';
+        endpoint = '/api/employees/face-login/';
       }
 
       const response = await axios.post(`http://localhost:8000${endpoint}`, formData, {

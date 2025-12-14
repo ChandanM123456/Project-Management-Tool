@@ -146,7 +146,7 @@ export default function EmployeeLogin() {
     setGreetingPlayed(false);
     
     try {
-      const res = await axiosInstance.post('/company/face/login/', { image: imageSrc });
+      const res = await axiosInstance.post('/employees/face-login/', { image: imageSrc });
       
       if (res.data && res.data.success) {
         // Store authentication data
