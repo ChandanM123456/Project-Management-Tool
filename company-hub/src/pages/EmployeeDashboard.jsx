@@ -1,183 +1,231 @@
-import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import "./EmployeeDashboard.css"; // Ensure you create this CSS file
+import React, { useState, useEffect, useMemo, useCallback, useRef } from "react";
+import "./EmployeeDashboard.css";
 
-// --- Simulated Data for the Dashboard ---
-const simulateEmployeeData = {
-  employee_name: "Alex Johnson",
-  employee_id: "E-401",
-  company_name: "TechInnovate Solutions",
-  yesterday_work: "Completed feature X development and started writing unit tests for module Y.",
-  yesterday_commits: [
-    { id: 'c1', message: "feat: Finish feature X implementation.", timestamp: '2025-12-12T15:00:00Z' },
-    { id: 'c2', message: "test: Initial unit tests for module Y.", timestamp: '2025-12-12T17:30:00Z' },
-  ],
-  today_tasks: [
-    { id: 1, title: "Finalize unit tests for module Y", allocated_time: "2 hours", status: "Pending" },
-    { id: 2, title: "Review pull requests from team Z", allocated_time: "1 hour", status: "Pending" },
-    { id: 3, title: "Start working on new endpoint for user profile", allocated_time: "5 hours", status: "Pending" },
-  ],
-};
-// ----------------------------------------
+// --- CORE SYSTEM DATA ---
+const INITIAL_TASKS = [
+  { id: "NX-701", title: "Scale WebRTC Signaling Cluster", status: "inprogress", priority: "Highest", type: "bug", assignee: "AJ", reporter: "SM", desc: "Signaling server hitting 80% CPU at 100 concurrent peer connections." },
+  { id: "NX-702", title: "Integrate Deepgram STT for AI", status: "todo", priority: "High", type: "task", assignee: "SK", reporter: "AJ", desc: "Replace legacy Speech-to-Text with low-latency streaming API." },
+  { id: "NX-703", title: "Socket.io Binary Framing", status: "review", priority: "Medium", type: "story", assignee: "MD", reporter: "AJ", desc: "Optimize packet size for real-time board updates." },
+  { id: "NX-704", title: "Employee KPI Analytics V3", status: "done", priority: "Low", type: "story", assignee: "AJ", reporter: "MD", desc: "Add predictive velocity charts based on historical sprint data." }
+];
 
 export default function EmployeeDashboard() {
-  const navigate = useNavigate();
-  const [employeeData, setEmployeeData] = useState({});
-  const [loading, setLoading] = useState(true);
+  // --- STATE SYSTEM ---
+  const [tasks, setTasks] = useState(INITIAL_TASKS);
+  const [activeTab, setActiveTab] = useState("board");
+  const [activeVoiceRoom, setActiveVoiceRoom] = useState(null);
+  const [isAiProcessing, setIsAiProcessing] = useState(false);
+  const [selectedTask, setSelectedTask] = useState(null);
+  const [activityFeed, setActivityFeed] = useState([]);
+  const [searchFilter, setSearchFilter] = useState("");
+  const [chatMessage, setChatMessage] = useState("");
+  const [chatHistory, setChatHistory] = useState([
+    { id: 1, user: "System", text: "Connected to Nexus-Cluster-01", type: "system" }
+  ]);
 
-  // Simulate fetching data on component mount
-  useEffect(() => {
-    // In a real application, you would fetch this from an API
-    // The following lines simulate loading from local storage/API and merging with simulated data
-    const storedName = localStorage.getItem("employee_name") || simulateEmployeeData.employee_name;
-    const storedId = localStorage.getItem("employee_id") || simulateEmployeeData.employee_id;
-    const storedCompany = localStorage.getItem("company_name") || simulateEmployeeData.company_name;
+  // --- FEATURE: AI NLP PIPELINE ---
+  const triggerAiAutomation = useCallback(() => {
+    if (!activeVoiceRoom) return;
+    setIsAiProcessing(true);
+    
+    // Simulate Neural Network Processing
+    setTimeout(() => {
+      const detectedIssue = {
+        id: `NX-${Math.floor(Math.random() * 900) + 100}`,
+        title: "AI DETECTED: Fix Latency in Socket.io Handshake",
+        status: "todo",
+        priority: "High",
+        type: "bug",
+        assignee: "AI-System",
+        reporter: "Voice-Capture",
+        desc: `Automatically extracted from ${activeVoiceRoom} discussion.`
+      };
+      
+      setTasks(prev => [detectedIssue, ...prev]);
+      logActivity("AI-Assistant", `Generated new issue: ${detectedIssue.id}`);
+      setChatHistory(prev => [...prev, { id: Date.now(), user: "Nexus AI", text: `I've added ${detectedIssue.id} to the backlog based on your talk.`, type: "ai" }]);
+      setIsAiProcessing(false);
+    }, 2000);
+  }, [activeVoiceRoom]);
 
-    setEmployeeData({
-      ...simulateEmployeeData,
-      employee_name: storedName,
-      employee_id: storedId,
-      company_name: storedCompany,
-    });
-
-    setLoading(false);
-  }, []);
-
-  const handleLogout = () => {
-    localStorage.clear();
-    // Redirect to login page
-    navigate("/employee/login"); 
+  // --- CORE SYSTEM LOGIC ---
+  const logActivity = (user, action) => {
+    const entry = { id: Date.now(), user, action, time: new Date().toLocaleTimeString() };
+    setActivityFeed(prev => [entry, ...prev].slice(0, 10));
   };
 
-  if (loading) {
-    return <div className="loading">Loading Dashboard...</div>;
-  }
+  const handleTaskStatusChange = (taskId, newStatus) => {
+    setTasks(prev => prev.map(t => t.id === taskId ? { ...t, status: newStatus } : t));
+    logActivity("You", `moved ${taskId} to ${newStatus}`);
+  };
 
-  // --- Logic for Yesterday's Status ---
-  const { employee_name, company_name, employee_id, yesterday_work, yesterday_commits, today_tasks } = employeeData;
-  const hasCommits = yesterday_commits && yesterday_commits.length > 0;
-  
-  let yesterdayStatus;
-  let remainingTime = "1 hour"; // Default catch-up time
-
-  if (!yesterday_work || yesterday_work === "") {
-    yesterdayStatus = {
-      type: "warning",
-      message: "No work logged for yesterday. Please update your status.",
-    };
-  } else if (!hasCommits) {
-    yesterdayStatus = {
-      type: "danger",
-      message: `Work log found, but **No Git Commits** were detected for yesterday. Your work is considered **Incomplete**. Please allocate ${remainingTime} to finish and commit.`,
-    };
-    // Add the catch-up task to today's list (simulated)
-    if (today_tasks[0].title !== `Catch up: Finish work from yesterday (${remainingTime})`) {
-        today_tasks.unshift({ id: 0, title: `Catch up: Finish work from yesterday (${remainingTime})`, allocated_time: remainingTime, status: "Urgent" });
-    }
-    
-  } else {
-    yesterdayStatus = {
-      type: "success",
-      message: `Great job! ${yesterday_commits.length} commits detected. Yesterday's work seems **Complete** and documented.`,
-    };
-  }
-  // ------------------------------------
+  const filteredTasks = useMemo(() => {
+    return tasks.filter(t => t.title.toLowerCase().includes(searchFilter.toLowerCase()) || t.id.toLowerCase().includes(searchFilter.toLowerCase()));
+  }, [tasks, searchFilter]);
 
   return (
-    <div className="dashboard-container">
-      {/* Navigation Bar */}
-      <nav className="navbar">
-        <div className="navbar-logo">
-          {company_name} Portal
+    <div className="nexus-shell">
+      {/* 1. GLOBAL JIRA SIDEBAR */}
+      <nav className="nexus-global-nav">
+        <div className="brand-orb">NX</div>
+        <div className="nav-stack">
+          <div className={`nav-icon ${activeTab === 'board' ? 'active' : ''}`} onClick={() => setActiveTab('board')}>📋</div>
+          <div className={`nav-icon ${activeTab === 'analytics' ? 'active' : ''}`} onClick={() => setActiveTab('analytics')}>📈</div>
+          <div className="nav-icon">👥</div>
         </div>
-        <div className="navbar-links">
-          <button onClick={() => navigate("/dashboard")} className="nav-btn active">Dashboard</button>
-          <button onClick={() => navigate("/tasks")} className="nav-btn">Tasks</button>
-          <button onClick={() => navigate("/projects")} className="nav-btn">Projects</button>
-          <button onClick={() => navigate("/schedule")} className="nav-btn">Schedule</button>
-          <button onClick={() => navigate("/settings")} className="nav-btn">Settings</button>
-        </div>
-        <div className="navbar-profile">
-          <span>{employee_name} ({employee_id})</span>
-          <button onClick={handleLogout} className="btn-logout">Logout</button>
+        <div className="nav-foot">
+          <div className="settings-icon">⚙️</div>
+          <div className="user-orb">AJ</div>
         </div>
       </nav>
 
-      {/* Main Dashboard Content */}
-      <div className="dashboard-main">
-        <header className="dashboard-header">
-          <h1>Welcome Back, {employee_name}!</h1>
-          <p>It's a fresh start. Let's make today productive.</p>
+      {/* 2. PROJECT CONTEXT SIDEBAR */}
+      <aside className="nexus-project-sidebar">
+        <div className="sidebar-brand">
+          <div className="proj-sq">🚀</div>
+          <div className="proj-meta">
+            <h4>Nexus Core</h4>
+            <p>Software Project</p>
+          </div>
+        </div>
+
+        <div className="sidebar-scroll">
+          <section className="nav-group">
+            <p className="group-label">PLANNING</p>
+            <button className="nav-item">🧭 Roadmap</button>
+            <button className="nav-item">📜 Backlog</button>
+            <button className={`nav-item ${activeTab === 'board' ? 'active' : ''}`} onClick={() => setActiveTab('board')}>📋 Kanban Board</button>
+          </section>
+
+          <section className="nav-group">
+            <p className="group-label">COMMUNICATIONS</p>
+            <div className="voice-cluster">
+              {['Engineering Sync', 'Design Standup', 'Emergency'].map(room => (
+                <div key={room} className={`voice-item ${activeVoiceRoom === room ? 'active' : ''}`} onClick={() => setActiveVoiceRoom(activeVoiceRoom === room ? null : room)}>
+                  <span className="v-icon">{activeVoiceRoom === room ? '🎙️' : '🔊'}</span>
+                  <span>{room}</span>
+                  {activeVoiceRoom === room && <div className="waves"><span></span><span></span><span></span></div>}
+                </div>
+              ))}
+            </div>
+          </section>
+        </div>
+      </aside>
+
+      {/* 3. MAIN WORKSPACE */}
+      <main className="nexus-workspace">
+        <header className="workspace-header">
+          <div className="breadcrumb">Projects / Nexus Core / {activeTab}</div>
+          <div className="header-btns">
+            {activeVoiceRoom && (
+              <button className={`ai-trigger-btn ${isAiProcessing ? 'pulse' : ''}`} onClick={triggerAiAutomation}>
+                {isAiProcessing ? 'AI Processing...' : '✨ Capture AI Intent'}
+              </button>
+            )}
+            <button className="btn-jira-blue">Create Issue</button>
+          </div>
         </header>
 
-        {/* Yesterday's Status Card */}
-        <div className={`status-card ${yesterdayStatus.type}`}>
-          <h2>🗓️ Yesterday's Work Status</h2>
-          <p dangerouslySetInnerHTML={{ __html: yesterdayStatus.message.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>') }} />
-          
-          {hasCommits && (
-            <>
-              <h3>Last Commits:</h3>
-              <ul className="commit-list">
-                {yesterday_commits.slice(0, 3).map((commit) => (
-                  <li key={commit.id}>
-                    <span className="commit-msg">{commit.message}</span>
-                    <span className="commit-time">({new Date(commit.timestamp).toLocaleTimeString()})</span>
-                  </li>
+        <div className="workspace-scroll">
+          {activeTab === 'board' ? (
+            <div className="board-view animate-fade">
+              <div className="board-header">
+                <h2>Sprint 14 - Nexus Engine</h2>
+                <div className="board-utilities">
+                  <input type="text" placeholder="Search issues..." value={searchFilter} onChange={(e) => setSearchFilter(e.target.value)} />
+                  <div className="avatar-pile">
+                    <div className="av-c">AJ</div><div className="av-c" style={{background:'#6554C0'}}>SM</div><div className="av-plus">+4</div>
+                  </div>
+                </div>
+              </div>
+
+              
+
+              <div className="kanban-grid">
+                {['todo', 'inprogress', 'review', 'done'].map(status => (
+                  <div className="kanban-col" key={status}>
+                    <div className="col-label">{status.toUpperCase()} <span>{filteredTasks.filter(t => t.status === status).length}</span></div>
+                    <div className="task-container">
+                      {filteredTasks.filter(t => t.status === status).map(task => (
+                        <div className="jira-card" key={task.id} onClick={() => setSelectedTask(task)}>
+                          <p className="card-title">{task.title}</p>
+                          <div className="card-footer">
+                            <div className="foot-left">
+                              <span className={`type-dot ${task.type}`}></span>
+                              <span className="issue-id">{task.id}</span>
+                            </div>
+                            <div className="foot-right">
+                              <span className={`prio-ico ${task.priority.toLowerCase()}`}>▲</span>
+                              <div className="mini-user">{task.assignee}</div>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
                 ))}
-              </ul>
-            </>
+              </div>
+            </div>
+          ) : (
+            <div className="analytics-view animate-fade">
+              <h2>Efficiency Analytics</h2>
+              
+              <div className="metrics-row">
+                <div className="metric-card"><h3>92%</h3><p>Success Rate</p></div>
+                <div className="metric-card"><h3>14h</h3><p>Avg. Resolve Time</p></div>
+                <div className="metric-card"><h3>24</h3><p>Sprint Capacity</p></div>
+              </div>
+            </div>
           )}
         </div>
+      </main>
 
-        {/* Today's Focus Card */}
-        <div className="card focus-card">
-          <h2>🎯 Today's Focus & Tasks</h2>
-          <ul className="task-list">
-            {today_tasks.map((task) => (
-              <li key={task.id} className={task.status.toLowerCase()}>
-                <span className="task-title">
-                    {task.title}
-                    {task.status === "Urgent" && <span className="tag-urgent">URGENT</span>}
-                </span>
-                <span className="task-time-allocated">Time: {task.allocated_time}</span>
-              </li>
+      {/* 4. UTILITY PANEL */}
+      <aside className="nexus-right-panel">
+        <div className="panel-tabs">
+          <button className="p-tab active">Activity Feed</button>
+          <button className="p-tab">Team Chat</button>
+        </div>
+
+        <div className="panel-body">
+          <div className="activity-feed">
+            {activityFeed.map(act => (
+              <div className="activity-note" key={act.id}>
+                <div className="act-orb">{act.user[0]}</div>
+                <div className="act-txt">
+                  <p><strong>{act.user}</strong> {act.action}</p>
+                  <span>{act.time}</span>
+                </div>
+              </div>
             ))}
-          </ul>
-          <p className="total-time">Total Estimated Work Time: **8.5 hours** (Simulated)</p>
-          <button className="btn-primary" onClick={() => navigate("/tasks")}>Go to Task Board</button>
-        </div>
-
-        {/* Employee Info & Quick Actions Grid */}
-        <div className="info-grid">
-          <div className="card info-card">
-            <h3>👤 Your Profile</h3>
-            <p><strong>Name:</strong> {employee_name}</p>
-            <p><strong>Employee ID:</strong> {employee_id}</p>
-            <p><strong>Company:</strong> {company_name}</p>
-          </div>
-          
-          <div className="card info-card">
-            <h3>⚡ Quick Access</h3>
-            <button className="btn-secondary" onClick={() => navigate("/time-off")}>
-              Request Time Off
-            </button>
-            <button className="btn-secondary" onClick={() => navigate("/resources")}>
-              Company Resources
-            </button>
-          </div>
-          
-          <div className="card info-card">
-            <h3>🔔 Notifications (3)</h3>
-            <ul>
-                <li>New HR Policy Update</li>
-                <li>Your Pay Slip is Ready</li>
-                <li>Review for PR #1234</li>
-            </ul>
           </div>
         </div>
 
-      </div>
+        {selectedTask && (
+          <div className="detail-drawer">
+            <div className="drawer-header">
+              <span>{selectedTask.id}</span>
+              <button onClick={() => setSelectedTask(null)}>✕</button>
+            </div>
+            <div className="drawer-content">
+              <h3>{selectedTask.title}</h3>
+              <div className="field">
+                <label>Description</label>
+                <div className="editable">{selectedTask.desc}</div>
+              </div>
+              <div className="field">
+                <label>Status</label>
+                <select value={selectedTask.status} onChange={(e) => handleTaskStatusChange(selectedTask.id, e.target.value)}>
+                  <option value="todo">To Do</option>
+                  <option value="inprogress">In Progress</option>
+                  <option value="review">Review</option>
+                  <option value="done">Done</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        )}
+      </aside>
     </div>
   );
 }
